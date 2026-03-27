@@ -1,0 +1,2 @@
+Why classes for fps:
+- It's possible to do this with functions, but classes are better: FPS logic has internal state: previous time, frame, smoothed value, etc. A class allows you to encapsulate this state and provide a singal interface. You can easily replace the implementation through the same interface
