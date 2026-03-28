@@ -12,8 +12,10 @@ def main():
     fps_counter_avg = AverageFPSCounter(interval=1.0)
     fps_counter_inst = InstantFPSCounter()
     fps_counter_smooth = SmoothedFPSCounter(alpha=0.5)
-    face_detector = init_face_detector() # TODO try buffalo_sc model
-    start_camera(fps_counter_avg, face_detector)
+
+    face_detector = init_face_detector(model_name='buffalo_sc', det_size=(160, 160))
+    
+    start_camera(fps_counter_avg, face_detector, scale=0.3)
 
 if __name__ == "__main__":
     main()

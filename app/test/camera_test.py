@@ -1,5 +1,5 @@
 import cv2
-# NOTE: Util file for manual test, after finished project need to be deleted
+# NOTE: Small script for manual test of webcam
 
 cap = cv2.VideoCapture(0)
 
