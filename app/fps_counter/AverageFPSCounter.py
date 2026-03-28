@@ -18,7 +18,7 @@ class AverageFPSCounter(BaseFPSCounter):
         elapsed = time.time() - self.start_time
 
         if elapsed >= self.interval:
-            self.fps = self.frame_count / elapsed
+            self.fps = self.frame_count / elapsed if elapsed > 0 else 0
             self.frame_count = 0
             self.start_time = time.time()
 

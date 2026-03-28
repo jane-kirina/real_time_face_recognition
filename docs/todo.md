@@ -1,0 +1,3 @@
+- [ ] add docstring to FPSCounter 
+- [ ] move draw_fps() & draw_faces() from webcam to py-file with util functions
+- [ ] Clean up ReadMe

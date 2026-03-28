@@ -41,8 +41,4 @@ facial recognition:
 
 Docs:
 - https://docs.opencv.org/4.x/dd/d43/tutorial_py_video_display.html
-
-
-
-# Other
-- OpenCV is a C++ library under the hood, python wrapper doesn't always work properly with img=, text=
+- [InsightFace](https://github.com/deepinsight/insightface/tree/master)
