@@ -1,10 +1,12 @@
 import cv2
 
 # ----------------------------
-# Draw on frame smth
+# Draw on frame functions
 # ----------------------------
 
 def draw_fps(frame, fps):
+    # Draw FPS value in the top-left corner of the frame
+
     cv2.putText(
         frame, # img
         f"FPS: {int(fps)}", # text
@@ -16,6 +18,8 @@ def draw_fps(frame, fps):
     )
 
 def draw_faces(frame, faces, scale):
+    # Draw face boxes and labels on the frame
+
     for face in faces:
         # scale bbox from small_frame back to original frame
         x1, y1, x2, y2 = (face.bbox / scale).astype(int)
@@ -37,6 +41,8 @@ def draw_faces(frame, faces, scale):
         )
 
 def draw_paused(frame):
+    # Draw paused status in the top-right corner of the frame
+
     text = 'Paused'
     (w_text, h_text), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)
     h, w = frame.shape[:2]
