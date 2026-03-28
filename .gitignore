@@ -2,7 +2,10 @@
 __pycache__/
 *.pyc
 .vscode/
-inswapper_128.onnx
 
 outputs/*.jpg
 face_db.npy
+
+notebook/
+exploration.Ipynb
+inswapper_128.onnx
