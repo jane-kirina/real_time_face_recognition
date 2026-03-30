@@ -3,7 +3,7 @@ import cv2
 # Custom
 from app.detector import (detect_faces)
 from app.drawer import (draw_fps, draw_faces, draw_paused)
-from app.embedding import (load_db, find_best_match)
+from app.embedding import (load_db, build_faiss_index, find_best_match_faiss)
 from app.handler_keyboard import handle_keypress_action
 
 # ----------------------------
@@ -53,7 +53,7 @@ def process_embeddings(state, match_threshold=0.5):
             face.match_score = 0.0
             continue
 
-        best_name, best_score = find_best_match(face.embedding, state['db'])
+        best_name, best_score = find_best_match_faiss(face.embedding, state['faiss_index'], state['faiss_names'])
 
         if best_score >= match_threshold:
             face.name = best_name
@@ -77,14 +77,18 @@ def start_camera(fps_counter, face_detector, scale = 0.5, detect_every_n_frames 
         raise RuntimeError('No stream: Could not open webcam')
     
     window_name = 'Webcam - Live'
+    db = load_db()
+    faiss_index, faiss_names = build_faiss_index(db)
 
-    state = { # Keep information about one frame: frame itself, frame_id, FPS and other
+    state = { # Keep information about one frame: frame itself, frame_id, FPS, etc.
         'paused': False,
         'frame': None,
         'fps': 0,
         'frame_id': 0,
         'faces': [],
-        'db': load_db(),
+        'db': db,
+        'faiss_index': faiss_index,
+        'faiss_names': faiss_names,
         'scale': scale
     }
 

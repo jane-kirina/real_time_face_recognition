@@ -29,7 +29,7 @@ A webcam stream detects faces in real time, tracks them across frames, extracts 
 - *InsightFace is widely used for face analysis and recognition pipelines*
 - *ArcFace: built into InsightFace, stable embeddings(angular margin loss)*
 - *ONNX Runtime is a strong choice for deployment-focused inference*
-- *FAISS is the standard practical tool for vector similarity search*
+- *FAISS is a fast way to find the closest embedding vectors and the standard practical tool for vector similarity search*
 
 ## Plan of work
 **Time limit: 1-2 weeks**
@@ -63,14 +63,19 @@ Goals:
 
 
 
-### Progress
+### Progress logs
+
 
 
 | Day | Status | What has been done                                                                                                                                                                                                                                                                                                                                                                                                 | Time |
 | --- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---- |
 | 1   | ✔      | Added ReadMe with plan for project<br>Created webcam stream<br>3 types of fps:<br>- instant<br>- smoothing<br>- 1-second average                                                                                                                                                                                                                                                                                   | 2.5h |
 | 2   | ✔      | Added face detection using InsightFace:<br>- camera works<br>- detector works<br>- rectangles are drawn                                                                                                                                                                                                                                                                                                            | 2h   |
-| 3-7 | ✔      | *Completed tasks from 3-7 days*<br>Add detect + embedding<br>Research: embedding, FaceNet vs ArcFace<br>saving embeddings to file<br>comparing new embeddings to saved ones<br>threshold for known / unknown face<br>Some optimizations<br>Added `handle_keypress` to webcam `start_camera()`<br>- exit<br>- save frame to folder `/outputs`<br>- pause frame + overlay text 'Paused'<br><br>Refactor & Clean Code | 4.5h |
+| 3   | ✔      | *Completed tasks from 3-7 days*<br>Add detect + embedding<br>Research: embedding, FaceNet vs ArcFace<br>saving embeddings to file<br>comparing new embeddings to saved ones<br>threshold for known / unknown face<br>Some optimizations<br>Added `handle_keypress` to webcam `start_camera()`<br>- exit<br>- save frame to folder `/outputs`<br>- pause frame + overlay text 'Paused'<br><br>Refactor & Clean Code | 4.5h |
+| 4   | ➖      | Sunday - weekday                                                                                                                                                                                                                                                                                                                                                                                                   |      |
+| 5   | ➖      | Research: FAISS docs, tutorials<br>FAISS Integration:<br>- replace manual search with FAISS<br>                                                                                                                                                                                                                                                                                                                    | 1.5h |
+| 6   | ➖      |                                                                                                                                                                                                                                                                                                                                                                                                                    |      |
+| 7   | ➖      |                                                                                                                                                                                                                                                                                                                                                                                                                    |      |
 | 8   | ➖      |                                                                                                                                                                                                                                                                                                                                                                                                                    |      |
 | 9   | ➖      |                                                                                                                                                                                                                                                                                                                                                                                                                    |      |
 | 10  | ➖      |                                                                                                                                                                                                                                                                                                                                                                                                                    |      |
@@ -82,13 +87,14 @@ Goals:
 
 
 
+
 ---
 
-General Pth
-1. OpenCV webcam feed
-2. InsightFace detection + embeddings
-3. Store embeddings locally
-4. FAISS search
+General Path
+1. ~~OpenCV webcam feed~~
+2. ~~InsightFace detection + embeddings~~
+3. ~~Store embeddings locally~~
+4. ~~FAISS search~~
 5. Add threshold logic
 6. Add tracking (basic)
 7. Add FastAPI

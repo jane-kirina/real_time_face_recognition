@@ -57,12 +57,14 @@ Tech:
 - ArcFace outperforms FaceNet: [Face Recognition Using ArcFace and FaceNet in Google
 Cloud Platform For Attendance System Mobile
 Application](https://www.researchgate.net/publication/368485018_Face_Recognition_Using_ArcFace_and_FaceNet_in_Google_Cloud_Platform_For_Attendance_System_Mobile_Application)
+- [Friendly intro to FAISS](https://www.pinecone.io/learn/series/faiss/faiss-tutorial/)
 
 Articles:
 - [Facial Analysis with “insightface” library](https://medium.com/@appanamukesh77/comprehensive-insights-onfacial-analysis-with-insightface-library-796d80464f45)
 - [ArcFace: Facial Recognition Model](https://medium.com/analytics-vidhya/arcface-facial-recognition-model-2eb77080aa80)
 
 Docs:
-- https://docs.opencv.org/4.x/dd/d43/tutorial_py_video_display.html
+- [OpenCV](https://docs.opencv.org/4.x/dd/d43/tutorial_py_video_display.html)
 - [InsightFace](https://github.com/deepinsight/insightface/tree/master)
 - [Haar Cascades](https://docs.opencv.org/3.3.0/d7/d8b/tutorial_py_face_detection.html)
+- [FAISS](https://faiss.ai/index.html)

@@ -15,7 +15,7 @@ def main():
 
     face_detector = init_face_detector(model_name='buffalo_sc', det_size=(160, 160))
     
-    start_camera(fps_counter_avg, face_detector, scale=0.3)
+    start_camera(fps_counter_avg, face_detector, scale=0.3, match_threshold = 0.6)
 
 if __name__ == "__main__":
     main()

@@ -7,15 +7,13 @@ from insightface.app import FaceAnalysis
 # Detect Faces
 def init_face_detector(model_name='buffalo_s', 
                        allowed_modules=['detection', 'recognition'], 
-                       det_size=(256, 256)):
+                       ctx_id=-1, # 0 = GPU, -1 = CPU
+                       det_size=(256, 256)): # default det_size=(640, 640))
     # Initialize InsightFace face detector
 
     app = FaceAnalysis(model_name, 
                        allowed_modules=allowed_modules)
-    
-    # 0 = GPU, -1 = CPU
-    # default det_size=(640, 640))
-    app.prepare(ctx_id=-1, det_size=det_size)
+    app.prepare(ctx_id=ctx_id, det_size=det_size)
 
     return app
 
