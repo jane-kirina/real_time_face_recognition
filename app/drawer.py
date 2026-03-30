@@ -25,11 +25,15 @@ def draw_faces(frame, faces, scale):
         x1, y1, x2, y2 = (face.bbox / scale).astype(int)
         
         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-        
-        label = f"{face.name}: {face.det_score:.2f}"
-        if getattr(face, 'embedding', None) is None:
+
+        name = getattr(face, 'name', 'unknown')
+        score = getattr(face, 'match_score', 0.0)
+
+        if getattr(face, 'embedding', None) is None and name == 'unknown':
             label = 'no embedding'
-        
+        else:
+            label = f"{name}: {score:.2f}"
+
         cv2.putText(
             frame, # img
             label, # text

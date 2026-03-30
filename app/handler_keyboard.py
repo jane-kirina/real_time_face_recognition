@@ -32,7 +32,7 @@ def action_save(state):
     os.makedirs('outputs', exist_ok=True)
 
     filename = f"outputs/frame_{state['frame_id']}.jpg"
-    success = cv2.imwrite(filename, state['frame'])
+    success = cv2.imwrite(filename, state['display_frame'])
     
     # Print if the frame was saved and the name of frame
     print(f"Saved: {success}, {filename}")

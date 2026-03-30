@@ -61,8 +61,6 @@ def find_best_match(query_embedding, db):
 # ----------------------------
 # FAISS search
 
-# - support: top-1 match, top-k (optional)
-
 def flatten_db(db):
     # Convert dict database to flat embeddings array and names list
     # db -> embeddings + names
@@ -91,13 +89,13 @@ def build_faiss_index(db):
         return None, names
 
     dim = known_embeddings.shape[1]
-    index = faiss.IndexFlatL2(dim)
+    index = faiss.IndexFlatIP(dim)
     index.add(known_embeddings)
 
     return index, names
 
 def find_best_match_faiss(query_embedding, index, names):
-    # Find best match using FAISS
+    # Find best match using FAISS, top-1 match
 
     if index is None or len(names) == 0:
         return None, -1.0

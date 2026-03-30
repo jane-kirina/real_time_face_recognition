@@ -5,6 +5,7 @@ from app.detector import (detect_faces)
 from app.drawer import (draw_fps, draw_faces, draw_paused)
 from app.embedding import (load_db, build_faiss_index, find_best_match_faiss)
 from app.handler_keyboard import handle_keypress_action
+from app.tracker import (update_track_identity, update_tracks)
 
 # ----------------------------
 # Frame processing
@@ -31,11 +32,7 @@ def build_display_frame(state):
 
     display_frame = state['frame'].copy()
 
-    draw_faces(
-        display_frame,
-        state.get('faces', []),
-        state.get('scale', 1.0)
-    )
+    draw_faces(display_frame, state['faces'], state['scale'])
     draw_fps(display_frame, state.get('fps', 0))
 
     if state.get('paused', False):
@@ -43,25 +40,39 @@ def build_display_frame(state):
 
     return display_frame
 
+def find_track_by_id(tracks, track_id):
+    for track in tracks:
+        if track['id'] == track_id:
+            return track
+    return None
 
 def process_embeddings(state, match_threshold=0.5):
     # Match detected face embeddings with saved people
-
     for face in state['faces']:
-        if getattr(face, 'embedding', None) is None:
-            face.name = 'no embedding'
-            face.match_score = 0.0
+        track = find_track_by_id(state['tracks'], getattr(face, 'track_id', None))
+        if track is None:
             continue
 
-        best_name, best_score = find_best_match_faiss(face.embedding, state['faiss_index'], state['faiss_names'])
+        if getattr(face, 'embedding', None) is None:
+            face.name = track['name']
+            face.match_score = track['score']
+            continue
+
+        best_name, best_score = find_best_match_faiss(
+            face.embedding,
+            state['faiss_index'],
+            state['faiss_names']
+        )
 
         if best_score >= match_threshold:
-            face.name = best_name
-            face.match_score = best_score
+            predicted_name = best_name
         else:
-            face.name = 'unknown'
-            face.match_score = best_score
+            predicted_name = 'unknown'
 
+        update_track_identity(track, predicted_name, best_score, match_threshold)
+
+        face.name = track['name']
+        face.match_score = track['score']
 
 # ----------------------------
 # Main function:
@@ -84,12 +95,15 @@ def start_camera(fps_counter, face_detector, scale = 0.5, detect_every_n_frames 
         'paused': False,
         'frame': None,
         'fps': 0,
+        'scale': scale,
         'frame_id': 0,
         'faces': [],
+        'display_frame': None,
         'db': db,
         'faiss_index': faiss_index,
         'faiss_names': faiss_names,
-        'scale': scale
+        'tracks':[],
+        'next_track_id': 1
     }
 
     while True:
@@ -108,20 +122,29 @@ def start_camera(fps_counter, face_detector, scale = 0.5, detect_every_n_frames 
             # Optimizations: Detection will be every N frames
             if state['frame_id'] % detect_every_n_frames == 0:
                 state['faces'] = detect_faces(face_detector, small_frame)
-            
+
+                state['tracks'], state['next_track_id'] = update_tracks(
+                    state['tracks'],
+                    state['faces'],
+                    state['next_track_id'],
+                    max_distance=40,
+                    max_missed=8
+                    )
+
             process_embeddings(state, match_threshold)
             
             # Update state with frame, fps
             state['frame'] = frame.copy()
             state['fps'] = fps_counter.update()
             state['frame_id'] += 1
-
         # ----------------------------
         # Draw information on a frame
         display_frame = build_display_frame(state)
 
         if display_frame is not None:
             cv2.imshow(window_name, display_frame)
+
+        state['display_frame'] = display_frame
 
         # ----------------------------
         # Keypress handle
