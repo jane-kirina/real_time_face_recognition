@@ -73,3 +73,4 @@ Docs:
 - [Haar Cascades](https://docs.opencv.org/3.3.0/d7/d8b/tutorial_py_face_detection.html)
 - [FAISS](https://faiss.ai/index.html)
 - [Logging](https://docs.python.org/3/library/logging.html)
+- [FastAPI](https://fastapi.tiangolo.com/)

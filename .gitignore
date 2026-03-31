@@ -5,9 +5,3 @@ __pycache__/
 
 outputs/*.jpg
 face_db.npy
-
-notebook/
-exploration.Ipynb
-inswapper_128.onnx
-api.py
-app/storage.py

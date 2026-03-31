@@ -2,7 +2,7 @@ import cv2
 import os
 
 # Custom
-from app.embedding import (save_db, save_embedding)
+from app.embedding import (save_db, load_db, save_embedding, build_faiss_index)
 
 # ----------------------------
 # Keypress handle:
@@ -58,7 +58,6 @@ def action_save_embedding(state):
         print('Face has no embedding')
         return
     
-    # TODO hardcoding
     person_name = input('Enter person name: ').strip()
 
     if not person_name:
@@ -74,12 +73,35 @@ def action_save_embedding(state):
     save_db(db)
     state.logger.log_system('SAVED_NEW_EMBEDDING', name=person_name)
 
+def action_reload_database(state):
+    try:
+        state.db = load_db()
+        state.faiss_index, state.faiss_names = build_faiss_index(state.db)
+
+        total_vectors = (
+            state.faiss_index.ntotal
+            if state.faiss_index is not None
+            else 0
+        )
+
+        state.logger.log_system(
+            'DATABASE_RELOADED',
+            total_persons=len(state.db),
+            total_vectors=total_vectors,
+        )
+
+        print('Database reloaded')
+
+    except Exception as e:
+        print(f'Reload failed: {e}')
+
 KEY_ACTIONS = {
     ord('q'): action_exit,
     27: action_exit, # ESC key
     ord('s'): action_save,
     ord('p'): action_pause,
-    ord('e'): action_save_embedding
+    ord('e'): action_save_embedding,
+    ord('r'): action_reload_database
 }
 
 def handle_keypress_action(state):

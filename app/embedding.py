@@ -15,7 +15,7 @@ def cosine_similarity(a, b):
     return np.dot(a, b)
 
 # ----------------------------
-# save & load embedding
+# save, load & delete embedding
 
 def save_embedding(db, person_name, embedding):
     # Save one embedding for a person in the database
@@ -37,6 +37,14 @@ def load_db(path='data/face_db.npy'):
     if not os.path.exists(path):
         return {}
     return np.load(path, allow_pickle=True).item()
+
+def delete_person(db, name):
+    if name in db:
+        del db[name]
+ 
+def list_persons(db):
+    return sorted(db.keys())
+
 
 # ----------------------------
 # find best match
