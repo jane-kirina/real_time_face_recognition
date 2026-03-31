@@ -2,6 +2,7 @@
 __pycache__/
 *.pyc
 .vscode/
+test_env/
 
 outputs/*.jpg
 face_db.npy

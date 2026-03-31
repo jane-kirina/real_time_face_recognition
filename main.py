@@ -8,7 +8,7 @@ from app.CameraState import CameraState
 
 def main():
     logger = EventLogger()
-    webcamera_state = CameraState(logger=logger, scale = 0.5)
+    state = CameraState(logger=logger, scale = 0.5)
     fps_counter_avg = AverageFPSCounter(interval=1.0)
 
     model_name='buffalo_s'
@@ -20,14 +20,14 @@ def main():
     
     logger.log_system('FACE_DETECTOR_INIT', model=model_name, det_size=det_size)
 
-    webcamera_state.logger.log_system('START_CAMERA', 
-                                      scale=webcamera_state.scale, 
+    state.logger.log_system('START_CAMERA', 
+                                      scale=state.scale, 
                                       match_threshold = match_threshold, 
                                       detect_every_n_frames=detect_every_n_frames)
 
     start_camera(fps_counter_avg, 
                  face_detector, 
-                 webcamera_state, 
+                 state, 
                  match_threshold = match_threshold, 
                  detect_every_n_frames=detect_every_n_frames)
 

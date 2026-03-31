@@ -1,4 +1,5 @@
 import cv2
+import time
 
 # Custom
 from app.detector import (detect_faces)
@@ -6,6 +7,7 @@ from app.drawer import (draw_fps, draw_faces, draw_paused)
 from app.embedding import (load_db, build_faiss_index, find_best_match_faiss)
 from app.handler_keyboard import handle_keypress_action
 from app.tracker import (update_track_identity, update_tracks)
+
 
 # ----------------------------
 # Frame processing
