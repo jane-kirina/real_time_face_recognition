@@ -52,6 +52,7 @@ Project has two entrypoints:
 
 ### Offline pipeline
 > Load: uvicorn api:app --host localhost --port 8000 --reload
+> 
 > python -m app.api
 
 1. Data collection (add new person images)  
