@@ -48,10 +48,7 @@ Project has two entrypoints:
 4. Extract embedding
 5. Search nearest neighbor in FAISS
 6. Apply decision logic (threshold-based classification)
-7. Post-processing:  
-	- tracking across frames  
-	- temporal smoothing (stable identity)
-8. Render frame and save event
+7. Render frame and save event
 
 ### Offline pipeline
 > Load: uvicorn api:app --host localhost --port 8000 --reload
