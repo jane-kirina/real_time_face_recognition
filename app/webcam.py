@@ -52,8 +52,10 @@ def process_embeddings(state, match_threshold=0.5):
         track = find_track_by_id(state['tracks'], getattr(face, 'track_id', None))
         if track is None:
             continue
-
-        if getattr(face, 'embedding', None) is None:
+        
+        state['logger'].log_detection(track['name'], track['id'], track['score'])
+        
+        if track['name'] != 'unknown' and track['score'] >= match_threshold:
             face.name = track['name']
             face.match_score = track['score']
             continue
@@ -64,6 +66,8 @@ def process_embeddings(state, match_threshold=0.5):
             state['faiss_names']
         )
 
+        # TODO add history
+
         if best_score >= match_threshold:
             predicted_name = best_name
         else:
@@ -71,7 +75,7 @@ def process_embeddings(state, match_threshold=0.5):
 
         update_track_identity(track, predicted_name, best_score, match_threshold)
 
-        face.name = track['name']
+        face.name = track['name'] if track['name'] != 'unknown' else predicted_name
         face.match_score = track['score']
 
 # ----------------------------
@@ -79,17 +83,21 @@ def process_embeddings(state, match_threshold=0.5):
 # - Webcam stream, video loop with fps, embeddings
 # ----------------------------
 # Webcam stream, video loop with fps
-def start_camera(fps_counter, face_detector, scale = 0.5, detect_every_n_frames = 3, match_threshold = 0.5):
+def start_camera(fps_counter, face_detector, logger, scale = 0.5, detect_every_n_frames = 3, match_threshold = 0.5):
     # Start webcam stream and process frames in a loop
+    logger.log_system('START_CAMERA', scale=0.75, match_threshold = 0.5, detect_every_n_frames=4)
 
     stream = cv2.VideoCapture(0)
 
     if not stream.isOpened():
+        logger.log_system('NO_STREAM__ERROR', message='Could not open webcam')
         raise RuntimeError('No stream: Could not open webcam')
     
     window_name = 'Webcam - Live'
     db = load_db()
+    logger.log_system('EMBEDDINGS_DATABASE_LOADED', total_embeddings=len(db))
     faiss_index, faiss_names = build_faiss_index(db)
+    logger.log_system('FAISS_INDEX_BUILT', index_size=faiss_index.ntotal, total_identities=len(faiss_names))
 
     state = { # Keep information about one frame: frame itself, frame_id, FPS, etc.
         'paused': False,
@@ -103,8 +111,11 @@ def start_camera(fps_counter, face_detector, scale = 0.5, detect_every_n_frames 
         'faiss_index': faiss_index,
         'faiss_names': faiss_names,
         'tracks':[],
-        'next_track_id': 1
+        'next_track_id': 1,
+        'logger': logger
     }
+
+    logger.log_system('CAMERA_STARTED')
 
     while True:
         if not state['paused']: # TODO separeted func
@@ -130,8 +141,8 @@ def start_camera(fps_counter, face_detector, scale = 0.5, detect_every_n_frames 
                     max_distance=40,
                     max_missed=8
                     )
-
-            process_embeddings(state, match_threshold)
+                # Optimizations: Embeddings will be every N frames 
+                process_embeddings(state, match_threshold)
             
             # Update state with frame, fps
             state['frame'] = frame.copy()
@@ -151,6 +162,8 @@ def start_camera(fps_counter, face_detector, scale = 0.5, detect_every_n_frames 
         result = handle_keypress_action(state)
         if result == 'exit':
             break
+
+    logger.log_system('CAMERA_ENDED')
 
     stream.release()
     cv2.destroyAllWindows()

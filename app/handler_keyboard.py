@@ -35,6 +35,7 @@ def action_save(state):
     success = cv2.imwrite(filename, state['display_frame'])
     
     # Print if the frame was saved and the name of frame
+    state['logger'].log_system('SAVED_FRAME', success=success, filename=filename)
     print(f"Saved: {success}, {filename}")
 
 def action_save_embedding(state):
@@ -70,8 +71,7 @@ def action_save_embedding(state):
     
     save_embedding(db, person_name, face.embedding)
     save_db(db)
-
-    print(f'Saved embedding for: {person_name}')
+    state['logger'].log_system('SAVED_NEW_EMBEDDING', name=person_name, face_embedding=face.embedding)
 
 KEY_ACTIONS = {
     ord('q'): action_exit,

@@ -62,9 +62,14 @@ Application](https://www.researchgate.net/publication/368485018_Face_Recognition
 Articles:
 - [Facial Analysis with “insightface” library](https://medium.com/@appanamukesh77/comprehensive-insights-onfacial-analysis-with-insightface-library-796d80464f45)
 - [ArcFace: Facial Recognition Model](https://medium.com/analytics-vidhya/arcface-facial-recognition-model-2eb77080aa80)
+- [Centroid Object Tracking](https://medium.com/%40subhajeet.roy/centroid-object-tracking-835d75e4a75a)
+- [Object Tracking for Computer Vision](https://datature.io/blog/implementing-object-tracking-for-computer-vision)
+- [Tracking Algorithms](https://broutonlab.com/blog/opencv-object-tracking/)
+- [Logging](https://realpython.com/python-logging/)
 
 Docs:
 - [OpenCV](https://docs.opencv.org/4.x/dd/d43/tutorial_py_video_display.html)
 - [InsightFace](https://github.com/deepinsight/insightface/tree/master)
 - [Haar Cascades](https://docs.opencv.org/3.3.0/d7/d8b/tutorial_py_face_detection.html)
 - [FAISS](https://faiss.ai/index.html)
+- [Logging](https://docs.python.org/3/library/logging.html)
