@@ -27,15 +27,15 @@ def build_display_frame(state):
     # Prepare frame for display with boxes, labels and FPS
     # Main logic for adding text, faces detection on frame
 
-    if state['frame'] is None:
+    if state.frame is None:
         return None
 
-    display_frame = state['frame'].copy()
+    display_frame = state.frame.copy()
 
-    draw_faces(display_frame, state['faces'], state['scale'])
-    draw_fps(display_frame, state.get('fps', 0))
+    draw_faces(display_frame, state.faces, state.scale)
+    draw_fps(display_frame, state.fps)
 
-    if state.get('paused', False):
+    if state.paused:
         draw_paused(display_frame)
 
     return display_frame
@@ -48,12 +48,12 @@ def find_track_by_id(tracks, track_id):
 
 def process_embeddings(state, match_threshold=0.5):
     # Match detected face embeddings with saved people
-    for face in state['faces']:
-        track = find_track_by_id(state['tracks'], getattr(face, 'track_id', None))
+    for face in state.faces:
+        track = find_track_by_id(state.tracks, getattr(face, 'track_id', None))
         if track is None:
             continue
         
-        state['logger'].log_detection(track['name'], track['id'], track['score'])
+        state.logger.log_detection(track['name'], track['id'], track['score'])
         
         if track['name'] != 'unknown' and track['score'] >= match_threshold:
             face.name = track['name']
@@ -62,8 +62,8 @@ def process_embeddings(state, match_threshold=0.5):
 
         best_name, best_score = find_best_match_faiss(
             face.embedding,
-            state['faiss_index'],
-            state['faiss_names']
+            state.faiss_index,
+            state.faiss_names
         )
 
         # TODO add history
@@ -83,42 +83,29 @@ def process_embeddings(state, match_threshold=0.5):
 # - Webcam stream, video loop with fps, embeddings
 # ----------------------------
 # Webcam stream, video loop with fps
-def start_camera(fps_counter, face_detector, logger, scale = 0.5, detect_every_n_frames = 3, match_threshold = 0.5):
+def start_camera(fps_counter, face_detector, state, detect_every_n_frames = 3, match_threshold = 0.5):
     # Start webcam stream and process frames in a loop
-    logger.log_system('START_CAMERA', scale=0.75, match_threshold = 0.5, detect_every_n_frames=4)
-
     stream = cv2.VideoCapture(0)
 
     if not stream.isOpened():
-        logger.log_system('NO_STREAM__ERROR', message='Could not open webcam')
+        state.logger.log_system('NO_STREAM__ERROR', message='Could not open webcam')
         raise RuntimeError('No stream: Could not open webcam')
     
     window_name = 'Webcam - Live'
     db = load_db()
-    logger.log_system('EMBEDDINGS_DATABASE_LOADED', total_embeddings=len(db))
+    state.logger.log_system('EMBEDDINGS_DATABASE_LOADED', total_embeddings=len(db))
+
     faiss_index, faiss_names = build_faiss_index(db)
-    logger.log_system('FAISS_INDEX_BUILT', index_size=faiss_index.ntotal, total_identities=len(faiss_names))
+    state.faiss_index = faiss_index
+    state.faiss_names = faiss_names
+    state.logger.log_system('FAISS_INDEX_BUILT', 
+                            index_size=faiss_index.ntotal if faiss_index is not None else 0, 
+                            total_identities=len(faiss_names))
 
-    state = { # Keep information about one frame: frame itself, frame_id, FPS, etc.
-        'paused': False,
-        'frame': None,
-        'fps': 0,
-        'scale': scale,
-        'frame_id': 0,
-        'faces': [],
-        'display_frame': None,
-        'db': db,
-        'faiss_index': faiss_index,
-        'faiss_names': faiss_names,
-        'tracks':[],
-        'next_track_id': 1,
-        'logger': logger
-    }
-
-    logger.log_system('CAMERA_STARTED')
+    state.logger.log_system('CAMERA_STARTED')
 
     while True:
-        if not state['paused']: # TODO separeted func
+        if not state.paused: # TODO separeted func
             frame = read_frame(stream)
 
             if frame is None:
@@ -128,16 +115,16 @@ def start_camera(fps_counter, face_detector, logger, scale = 0.5, detect_every_n
             # Frame processing
 
             # Optimizations: Create small frame for detection 
-            small_frame = cv2.resize(frame, (0, 0), fx=scale, fy=scale)
+            small_frame = cv2.resize(frame, (0, 0), fx=state.scale, fy=state.scale)
             
             # Optimizations: Detection will be every N frames
-            if state['frame_id'] % detect_every_n_frames == 0:
-                state['faces'] = detect_faces(face_detector, small_frame)
+            if state.frame_id % detect_every_n_frames == 0:
+                state.faces = detect_faces(face_detector, small_frame)
 
-                state['tracks'], state['next_track_id'] = update_tracks(
-                    state['tracks'],
-                    state['faces'],
-                    state['next_track_id'],
+                state.tracks, state.next_track_id = update_tracks(
+                    state.tracks,
+                    state.faces,
+                    state.next_track_id,
                     max_distance=40,
                     max_missed=8
                     )
@@ -145,9 +132,9 @@ def start_camera(fps_counter, face_detector, logger, scale = 0.5, detect_every_n
                 process_embeddings(state, match_threshold)
             
             # Update state with frame, fps
-            state['frame'] = frame.copy()
-            state['fps'] = fps_counter.update()
-            state['frame_id'] += 1
+            state.frame = frame.copy()
+            state.fps = fps_counter.update()
+            state.frame_id += 1
         # ----------------------------
         # Draw information on a frame
         display_frame = build_display_frame(state)
@@ -155,7 +142,7 @@ def start_camera(fps_counter, face_detector, logger, scale = 0.5, detect_every_n
         if display_frame is not None:
             cv2.imshow(window_name, display_frame)
 
-        state['display_frame'] = display_frame
+        state.display_frame = display_frame
 
         # ----------------------------
         # Keypress handle
@@ -163,7 +150,7 @@ def start_camera(fps_counter, face_detector, logger, scale = 0.5, detect_every_n
         if result == 'exit':
             break
 
-    logger.log_system('CAMERA_ENDED')
+    state.logger.log_system('CAMERA_ENDED')
 
     stream.release()
     cv2.destroyAllWindows()

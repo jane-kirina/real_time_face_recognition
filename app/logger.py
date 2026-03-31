@@ -2,7 +2,7 @@ import time
 import json
 
 class EventLogger:
-    def __init__(self, cooldown=5.0, log_file='events.jsonl'):
+    def __init__(self, cooldown=5.0, log_file='data/events.jsonl'):
         # cooldown: seconds before the same identity can be logged again
         self.cooldown = cooldown
         self.log_file = log_file
@@ -55,3 +55,6 @@ class EventLogger:
         }
 
         self.write_event(event)
+
+    def get_curr_logger():
+        return

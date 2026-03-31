@@ -26,12 +26,12 @@ def save_embedding(db, person_name, embedding):
 
     db[person_name].append(embedding)
 
-def save_db(db, path='face_db.npy'):
+def save_db(db, path='data/face_db.npy'):
     # Save embeddings database to file
 
     np.save(path, db, allow_pickle=True)
 
-def load_db(path='face_db.npy'):
+def load_db(path='data/face_db.npy'):
     # Load embeddings database from file
 
     if not os.path.exists(path):

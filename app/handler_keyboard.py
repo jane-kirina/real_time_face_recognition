@@ -18,31 +18,31 @@ def action_exit(state):
 def action_pause(state):
     # Switch pause mode on or off
 
-    state['paused'] = not state['paused']
-    print(f"Paused: {state['paused']}")
+    state.paused = not state.paused
+    print(f"Paused: {state.paused}")
 
 def action_save(state):
     # Save the current frame to the outputs folder
 
-    if state['frame'] is None:
+    if state.frame is None:
         print('No frame to save')
         return
 
     # create folder for images
     os.makedirs('outputs', exist_ok=True)
 
-    filename = f"outputs/frame_{state['frame_id']}.jpg"
-    success = cv2.imwrite(filename, state['display_frame'])
+    filename = f"outputs/frame_{state.frame_id}.jpg"
+    success = cv2.imwrite(filename, state.display_frame)
     
     # Print if the frame was saved and the name of frame
-    state['logger'].log_system('SAVED_FRAME', success=success, filename=filename)
+    state.logger.log_system('SAVED_FRAME', success=success, filename=filename)
     print(f"Saved: {success}, {filename}")
 
 def action_save_embedding(state):
     # Save embedding for one detected face
 
-    faces = state.get('faces', [])
-    db = state.get('db', {})
+    faces = state.faces
+    db = state.db
     
     if len(faces) == 0:
         print('No face detected')
@@ -65,13 +65,14 @@ def action_save_embedding(state):
         print('Empty name. Enrollment cancelled')
         return
     
-    if person_name in db and len(db[person_name]) >= 8:
+    if person_name in db and len(db[person_name]) >= 10:
+        state.logger.log_system('MAXIMUM_EMBEDDINGS', name=person_name)
         print(f'{person_name} has the maximum 8 embeddings')
         return
     
     save_embedding(db, person_name, face.embedding)
     save_db(db)
-    state['logger'].log_system('SAVED_NEW_EMBEDDING', name=person_name, face_embedding=face.embedding)
+    state.logger.log_system('SAVED_NEW_EMBEDDING', name=person_name)
 
 KEY_ACTIONS = {
     ord('q'): action_exit,
