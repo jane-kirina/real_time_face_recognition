@@ -4,17 +4,19 @@ from app.logger import EventLogger
 
 from app.detector import init_face_detector
 from app.webcam import start_camera
-from app.CameraState import CameraState
+from app.camera_state import CameraState
+
+from app.config import settings
 
 def main():
     logger = EventLogger()
     state = CameraState(logger=logger, scale = 0.5)
-    fps_counter_avg = AverageFPSCounter(interval=1.0)
+    fps_counter_avg = AverageFPSCounter()
 
-    model_name='buffalo_s'
-    det_size=(320, 320)
-    match_threshold = 0.5
-    detect_every_n_frames=4
+    model_name=settings.model_name
+    det_size=(settings.det_size, settings.det_size)
+    match_threshold = settings.match_threshold
+    detect_every_n_frames=settings.detect_every_n_frames
 
     face_detector = init_face_detector(model_name=model_name, det_size=det_size)
     

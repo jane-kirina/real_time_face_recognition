@@ -68,8 +68,6 @@ def process_embeddings(state, match_threshold=0.5):
             state.faiss_names
         )
 
-        # TODO add history
-
         if best_score >= match_threshold:
             predicted_name = best_name
         else:

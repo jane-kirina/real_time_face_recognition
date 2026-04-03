@@ -6,3 +6,6 @@ test_env/
 
 outputs/*.jpg
 face_db.npy
+.env
+Tracking (reduce flicker) (2).jpg
+app/registry.py

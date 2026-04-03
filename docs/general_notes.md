@@ -16,20 +16,6 @@ General pipeline:
 4. Compare with database (cosine similarity)
 5. Apply threshold → known / unknown
 
-### Clustering of faces helps simplify and speed up identification
-1. Clustering with Visual Attributes
-- Features (gender, age, glasses, etc.) are used -> these features help narrow the search space -> hierarchical (agglomerative) clustering is used
-- Result: more features -> better the clustering quality
-2. Clustering for Identification (1:N)
-- Used in open-set recognition (the person may be unknown)
-- Works with video (multiple frames of the same face)
-- Clusters combine different images of the same person
-- Result: Increasing the number of clusters initially improves the result, but after a certain point, it worsens the result
-
-Peak performance - the number of clusters:
-- too few -> different people in one cluster
-- too many -> one person is split into several
-
 ## Face embeddings
 > Embeddings = numerical representation of faces
 
@@ -66,6 +52,9 @@ Articles:
 - [Object Tracking for Computer Vision](https://datature.io/blog/implementing-object-tracking-for-computer-vision)
 - [Tracking Algorithms](https://broutonlab.com/blog/opencv-object-tracking/)
 - [Logging](https://realpython.com/python-logging/)
+- [Face recognition with OpenCV, Python, and deep learning](https://pyimagesearch.com/2018/06/18/face-recognition-with-opencv-python-and-deep-learning/)
+- [What is a face embedding?](https://www.futurebeeai.com/knowledge-hub/face-embedding-ai)
+- [Probabilistic Face Embeddings] (https://openaccess.thecvf.com/content_ICCV_2019/papers/Shi_Probabilistic_Face_Embeddings_ICCV_2019_paper.pdf)
 
 Docs:
 - [OpenCV](https://docs.opencv.org/4.x/dd/d43/tutorial_py_video_display.html)

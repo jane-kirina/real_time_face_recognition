@@ -1,11 +1,13 @@
 import uvicorn
+# Custom
+from app.config import settings
 
 def main():
     uvicorn.run(
-        'app.api:app',
-        host="127.0.0.1",
-        port=8000,
-        reload=True
+        settings.api_application,
+        host=settings.api_host,
+        port=settings.api_port,
+        reload=settings.api_reload
     )
 
 if __name__ == "__main__":
