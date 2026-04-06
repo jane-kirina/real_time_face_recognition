@@ -18,7 +18,7 @@ class CameraState:
     next_track_id: int = 1
     logger: Any = None
 
-class CameraRecognitionState: # TODO
+class CameraRecognitionState:
     def __init__(self, registry):
         self.registry = registry
         self.local_version = -1

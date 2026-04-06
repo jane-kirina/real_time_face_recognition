@@ -27,7 +27,7 @@ class EventLogger:
     # ----------------------------
     # Detection logs
     # ----------------------------
-    def log_detection(self, name, face_id=None, confidence=None):
+    def log_detection(self, name, face_id=None, score=None):
         now = time.time()
 
         # normalize identity key
@@ -43,15 +43,15 @@ class EventLogger:
 
         # choose event type
         if name == 'unknown':
-            event_type = 'UNKNOWN_DETECTED'
+            event_type = 'UNKNOWN_FACE_DETECTED'
         else:
-            event_type = "PERSON_DETECTED"
+            event_type = "FACE_RECOGNIZED"
 
         event = {
             'timestamp': time.strftime("%Y-%m-%d %H:%M:%S"),
             'event': event_type,
             'name': name,
-            'confidence': float(confidence) if confidence is not None else None
+            'score': float(score) if score is not None else None
         }
 
         self.write_event(event)

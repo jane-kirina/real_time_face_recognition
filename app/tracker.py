@@ -14,9 +14,7 @@ def update_tracks(tracks, faces, next_track_id, max_distance=50, max_missed=10, 
     # keep track of which track IDs have already been matched on this frame
     matched_track_ids = set()
 
-    # go through each detected face on the current frame
     for face in faces:
-        # convert bbox to simple int list: [x1, y1, x2, y2]
         face_bbox = face.bbox.astype(int).tolist()
 
         # try to find the closest existing track
@@ -25,11 +23,9 @@ def update_tracks(tracks, faces, next_track_id, max_distance=50, max_missed=10, 
 
         # compare current face with all existing tracks
         for track in tracks:
-            # skip tracks that were already assigned to another face
             if track['id'] in matched_track_ids:
                 continue
 
-            # distance between current face and track (by bbox centers)
             dist = center_distance(face_bbox, track['bbox'])
             # pick the closest track within allowed distance
             if dist < best_distance and dist < max_distance:
@@ -38,13 +34,9 @@ def update_tracks(tracks, faces, next_track_id, max_distance=50, max_missed=10, 
         
         # found a matching track -> reuse it
         if best_track is not None:
-            # update track position with current bbox
             best_track['bbox'] = face_bbox
-            # reset "missed" counter since we see this track again
             best_track['missed'] = 0
-            # assign existing track ID to this face
             face.track_id = best_track['id']
-            # mark this track as already used
             matched_track_ids.add(best_track['id'])
         else:
             # no matching track -> create a new one
@@ -54,16 +46,12 @@ def update_tracks(tracks, faces, next_track_id, max_distance=50, max_missed=10, 
                 'name': 'unknown',  # will be updated later by recognition
                 'score': 0.0,
                 'missed': 0,
-                'history': deque(maxlen=smoothing_window)  # later replace 5 with config value
+                'history': deque(maxlen=smoothing_window)
             }
             
-            # add new track to list
             tracks.append(new_track)
-            # assign new ID to face
             face.track_id = next_track_id
-            # mark this new track as used
             matched_track_ids.add(next_track_id)
-            # prepare ID for next new track
             next_track_id += 1
 
     # increase 'missed' counter for tracks that were not seen on this frame
@@ -71,7 +59,6 @@ def update_tracks(tracks, faces, next_track_id, max_distance=50, max_missed=10, 
         if track['id'] not in matched_track_ids:
             track['missed'] += 1
 
-    # remove tracks that disappeared for too long
     tracks = [track for track in tracks if track['missed'] <= max_missed]
 
     # return updated tracks and next available ID
@@ -95,7 +82,7 @@ def update_track_identity(track, predicted_name, predicted_score, match_threshol
         return
 
     # if model suggests a different person:
-    # only switch identity if confidence is significantly higher
+    # only switch identity if score is significantly higher
     if predicted_score > track['score'] + 0.05:
         track['name'] = predicted_name
         track['score'] = predicted_score
@@ -127,7 +114,7 @@ def get_smoothed_identity(track, match_threshold=0.5, min_votes=2):
     if votes < min_votes:
         return 'unknown', 0.0
 
-    # average confidence only for the winning name
+    # average score only for the winning name
     winning_scores = [item['score'] for item in valid if item['name'] == best_name]
     avg_score = sum(winning_scores) / len(winning_scores)
 

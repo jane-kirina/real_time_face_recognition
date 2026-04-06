@@ -92,7 +92,7 @@ def start_camera(fps_counter, face_detector, state, detect_every_n_frames = 3, m
     stream = cv2.VideoCapture(0)
 
     if not stream.isOpened():
-        state.logger.log_system('NO_STREAM__ERROR', message='Could not open webcam')
+        state.logger.log_system('NO_STREAM_ERROR', message='Could not open webcam')
         raise RuntimeError('No stream: Could not open webcam')
     
     window_name = 'Webcam - Live'
@@ -109,7 +109,7 @@ def start_camera(fps_counter, face_detector, state, detect_every_n_frames = 3, m
     state.logger.log_system('CAMERA_STARTED')
 
     while True:
-        if not state.paused: # TODO separeted func
+        if not state.paused:
             frame = read_frame(stream)
 
             if frame is None:

@@ -1,7 +1,6 @@
-# TODO TEST EVERYTHING
 import os
 import json
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form
+from fastapi import FastAPI, HTTPException
 from typing import List
 import uvicorn
 from pydantic import BaseModel
@@ -11,13 +10,6 @@ from contextlib import asynccontextmanager
 # Custom
 from app.config import settings
 from app.registry import FaceRegistry
-
-app = FastAPI(
-    title='Face Recognition API',
-    docs_url='/docs',
-    redoc_url='/redoc',
-    openapi_url='/openapi.json'
-)
 
 registry = FaceRegistry(settings.face_db_path)
 
@@ -32,29 +24,36 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title='Face Recognition API',
+    docs_url='/docs',
+    redoc_url='/redoc',
+    openapi_url='/openapi.json',
     lifespan=lifespan
 )
 
+
+# ----------------------------
+# Models
+# ----------------------------
 class EnrollRequest(BaseModel):
     name: str
     embedding: list[float]
 
 
-# Main page
+# ----------------------------
+# Core endpoints
+# ----------------------------
 @app.get('/')
 def root():
     return {'message': 'Face Recognition API is running'}
 
-# TODO Health page
 @app.get('/health')
 def health():
-    return {'status': 'healthy'}
+    return {'status': 'ok'}
 
 @app.get('/stats')
 def stats():
     return registry.stats()
 
-# List with embeddings + names
 @app.get('/persons')
 def get_persons():
     return {
@@ -63,8 +62,10 @@ def get_persons():
         'version': registry.version
     }
 
-# Page with logs
-@app.get('/events') # TODO
+# ----------------------------
+# Events / Logs
+# ----------------------------
+@app.get('/events')
 def get_events(limit: int = 40):
     if not os.path.exists(settings.events_log_path):
         return {'total': 0, 'events': []}
@@ -85,29 +86,30 @@ def get_events(limit: int = 40):
         'events': events[-limit:]
     }
 
-# Reload FAISS index
-@app.post('/reload-index')
+# ----------------------------
+# Registry actions
+# ----------------------------
+@app.post('/index/index')
 def reload_index():
     registry.reload()
     return {
         'status': 'ok',
-        'message': 'Index reloaded',
+        'message': 'Index reloaded successfully',
         'stats': registry.stats()
     }
 
-# Add new 
-@app.post('/enroll')
-def enroll(req: EnrollRequest):
+@app.post('/person')
+def enroll_person(req: EnrollRequest):
     emb = np.array(req.embedding, dtype=np.float32)
     registry.add_person(req.name, emb)
 
     return {
         'status': 'ok',
-        'message': f'{req.name} added',
+        'message': f"Person '{req.name}' enrolled successfully",
         'stats': registry.stats()
     }
 
-# Delete person by name
+
 @app.delete('/persons/{name}')
 def delete_person(name):
     deleted = registry.delete_person(name)
@@ -117,6 +119,7 @@ def delete_person(name):
 
     return {
         'status': 'ok',
+        'message': f"Person '{name}' deleted",
         'deleted': deleted,
         'stats': registry.stats()
     }
