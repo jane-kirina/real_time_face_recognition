@@ -66,13 +66,11 @@ def get_persons():
 # Page with logs
 @app.get('/events') # TODO
 def get_events(limit: int = 40):
-    path = 'data/events.jsonl'
-
-    if not os.path.exists(path):
+    if not os.path.exists(settings.events_log_path):
         return {'total': 0, 'events': []}
 
     events = []
-    with open(path, 'r', encoding='utf-8') as f:
+    with open(settings.events_log_path, 'r', encoding='utf-8') as f:
         for line in f:
             line = line.strip()
             if not line:

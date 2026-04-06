@@ -261,3 +261,30 @@
 {"timestamp": "2026-04-02 17:35:34", "event": "PERSON_DETECTED", "name": "Jane", "confidence": 0.6160840392112732}
 {"timestamp": "2026-04-02 17:35:35", "event": "SAVED_FRAME", "success": true, "filename": "outputs/frame_177.jpg"}
 {"timestamp": "2026-04-02 17:35:38", "event": "CAMERA_ENDED"}
+{"timestamp": "2026-04-04 17:50:38", "event": "FACE_DETECTOR_INIT", "model": "buffalo_sc", "det_size": [320, 320]}
+{"timestamp": "2026-04-04 17:50:38", "event": "START_CAMERA", "scale": 0.5, "match_threshold": 0.6, "detect_every_n_frames": 3}
+{"timestamp": "2026-04-04 17:50:39", "event": "EMBEDDINGS_DATABASE_LOADED", "total_embeddings": 1}
+{"timestamp": "2026-04-04 17:50:39", "event": "FAISS_INDEX_BUILT", "index_size": 2, "total_identities": 2}
+{"timestamp": "2026-04-04 17:50:39", "event": "CAMERA_STARTED"}
+{"timestamp": "2026-04-04 17:50:39", "event": "UNKNOWN_DETECTED", "name": "unknown", "confidence": 0.0}
+{"timestamp": "2026-04-04 17:50:43", "event": "UNKNOWN_DETECTED", "name": "unknown", "confidence": 0.0}
+{"timestamp": "2026-04-04 17:50:44", "event": "PERSON_DETECTED", "name": "Jane", "confidence": 0.633237898349762}
+{"timestamp": "2026-04-04 17:50:50", "event": "PERSON_DETECTED", "name": "Jane", "confidence": 0.633237898349762}
+{"timestamp": "2026-04-04 17:50:55", "event": "PERSON_DETECTED", "name": "Jane", "confidence": 0.633237898349762}
+{"timestamp": "2026-04-04 17:51:00", "event": "PERSON_DETECTED", "name": "Jane", "confidence": 0.633237898349762}
+{"timestamp": "2026-04-04 17:51:05", "event": "PERSON_DETECTED", "name": "Jane", "confidence": 0.633237898349762}
+{"timestamp": "2026-04-04 17:51:10", "event": "PERSON_DETECTED", "name": "Jane", "confidence": 0.633237898349762}
+{"timestamp": "2026-04-04 17:51:16", "event": "PERSON_DETECTED", "name": "Jane", "confidence": 0.633237898349762}
+{"timestamp": "2026-04-04 17:51:18", "event": "SAVED_FRAME", "success": true, "filename": "outputs/frame_270.jpg"}
+{"timestamp": "2026-04-04 17:51:20", "event": "SAVED_FRAME", "success": true, "filename": "outputs/frame_287.jpg"}
+{"timestamp": "2026-04-04 17:51:21", "event": "PERSON_DETECTED", "name": "Jane", "confidence": 0.633237898349762}
+{"timestamp": "2026-04-04 17:51:22", "event": "CAMERA_ENDED"}
+{"timestamp": "2026-04-06 17:21:49", "event": "FACE_DETECTOR_INIT", "model": "buffalo_sc", "det_size": [320, 320]}
+{"timestamp": "2026-04-06 17:21:49", "event": "START_CAMERA", "scale": 0.5, "match_threshold": 0.6, "detect_every_n_frames": 3}
+{"timestamp": "2026-04-06 17:21:50", "event": "EMBEDDINGS_DATABASE_LOADED", "total_embeddings": 1}
+{"timestamp": "2026-04-06 17:21:50", "event": "FAISS_INDEX_BUILT", "index_size": 2, "total_identities": 2}
+{"timestamp": "2026-04-06 17:21:50", "event": "CAMERA_STARTED"}
+{"timestamp": "2026-04-06 17:21:50", "event": "UNKNOWN_DETECTED", "name": "unknown", "confidence": 0.0}
+{"timestamp": "2026-04-06 17:21:55", "event": "PERSON_DETECTED", "name": "Jane", "confidence": 0.6377773284912109}
+{"timestamp": "2026-04-06 17:22:01", "event": "PERSON_DETECTED", "name": "Jane", "confidence": 0.6649050414562225}
+{"timestamp": "2026-04-06 17:22:03", "event": "CAMERA_ENDED"}

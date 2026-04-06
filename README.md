@@ -105,19 +105,3 @@ Example settings:
 - `FACE_DB_PATH`
 - `API_PORT`
 
-## Design Notes
-This project focuses on building a clean and modular real-time face recognition pipeline:
-- detection
-- embedding extraction
-- FAISS-based search
-- tracking
-
-To keep the architecture simple and readable, advanced optimizations such as:
-- temporal smoothing
-- detailed benchmarking and evaluation
-
-were intentionally left out of the initial version. The current design allows these components to be added without major refactoring
-
-Note: Threshold is currently fixed and not tuned on a validation set
-
-

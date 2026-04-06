@@ -1,4 +1,5 @@
 import math
+from collections import Counter, deque
 
 def get_bbox_center(bbox):
     x1, y1, x2, y2 = bbox
@@ -9,7 +10,7 @@ def center_distance(bbox1, bbox2):
     c2x, c2y = get_bbox_center(bbox2)
     return math.hypot(c1x - c2x, c1y - c2y)
 
-def update_tracks(tracks, faces, next_track_id, max_distance=50, max_missed=10):
+def update_tracks(tracks, faces, next_track_id, max_distance=50, max_missed=10, smoothing_window=5):
     # keep track of which track IDs have already been matched on this frame
     matched_track_ids = set()
 
@@ -52,7 +53,8 @@ def update_tracks(tracks, faces, next_track_id, max_distance=50, max_missed=10):
                 'bbox': face_bbox,
                 'name': 'unknown',  # will be updated later by recognition
                 'score': 0.0,
-                'missed': 0
+                'missed': 0,
+                'history': deque(maxlen=smoothing_window)  # later replace 5 with config value
             }
             
             # add new track to list
@@ -97,3 +99,36 @@ def update_track_identity(track, predicted_name, predicted_score, match_threshol
     if predicted_score > track['score'] + 0.05:
         track['name'] = predicted_name
         track['score'] = predicted_score
+
+def add_prediction_to_track(track, predicted_name, predicted_score):
+    track['history'].append({
+        'name': predicted_name,
+        'score': float(predicted_score),
+    })
+
+def get_smoothed_identity(track, match_threshold=0.5, min_votes=2):
+    history = track.get('history', [])
+    if not history:
+        return 'unknown', 0.0
+
+    # ignore weak predictions
+    valid = [item for item in history if item['score'] >= match_threshold]
+    if not valid:
+        return 'unknown', 0.0
+
+    # majority vote by name
+    names = [item['name'] for item in valid if item['name'] != 'unknown']
+    if not names:
+        return 'unknown', 0.0
+
+    counts = Counter(names)
+    best_name, votes = counts.most_common(1)[0]
+
+    if votes < min_votes:
+        return 'unknown', 0.0
+
+    # average confidence only for the winning name
+    winning_scores = [item['score'] for item in valid if item['name'] == best_name]
+    avg_score = sum(winning_scores) / len(winning_scores)
+
+    return best_name, avg_score

@@ -6,7 +6,7 @@ from app.detector import (detect_faces)
 from app.drawer import (draw_fps, draw_faces, draw_paused)
 from app.embedding import (load_db, build_faiss_index, find_best_match_faiss)
 from app.handler_keyboard import handle_keypress_action
-from app.tracker import (update_track_identity, update_tracks)
+from app.tracker import (update_track_identity, update_tracks, add_prediction_to_track, get_smoothed_identity)
 
 
 # ----------------------------
@@ -54,14 +54,8 @@ def process_embeddings(state, match_threshold=0.5):
         track = find_track_by_id(state.tracks, getattr(face, 'track_id', None))
         if track is None:
             continue
-        
-        state.logger.log_detection(track['name'], track['id'], track['score'])
-        
-        if track['name'] != 'unknown' and track['score'] >= match_threshold:
-            face.name = track['name']
-            face.match_score = track['score']
-            continue
 
+        # if already confidently recognized, you can still keep updating history
         best_name, best_score = find_best_match_faiss(
             face.embedding,
             state.faiss_index,
@@ -73,10 +67,20 @@ def process_embeddings(state, match_threshold=0.5):
         else:
             predicted_name = 'unknown'
 
-        update_track_identity(track, predicted_name, best_score, match_threshold)
+        add_prediction_to_track(track, predicted_name, best_score)
 
-        face.name = track['name'] if track['name'] != 'unknown' else predicted_name
-        face.match_score = track['score']
+        smooth_name, smooth_score = get_smoothed_identity(
+            track,
+            match_threshold=match_threshold,
+            min_votes=2,
+        )
+
+        update_track_identity(track, smooth_name, smooth_score, match_threshold)
+        
+        state.logger.log_detection(track['name'], track['id'], track['score'])
+
+        face.name = track['name'] if track['name'] != 'unknown' else smooth_name
+        face.match_score = max(track['score'], smooth_score)
 
 # ----------------------------
 # Main function:
