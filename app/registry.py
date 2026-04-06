@@ -155,5 +155,5 @@ def get_snapshot(self):
             'labels': list(self.labels),
             'index': self.index,
             'version': self.version,
-            'embedding_dim': self.embedding_dim,
+            'embedding_dim': self.embedding_dim
         }

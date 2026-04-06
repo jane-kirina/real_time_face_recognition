@@ -54,7 +54,7 @@ python main.py
 ### Offline pipeline
 > To run:
 ```
-uvicorn api:app --host localhost --port 8000 --reload
+uvicorn app.api:app --host localhost --port 8000 --reload
 ```
 or 
 ```

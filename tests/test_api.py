@@ -90,7 +90,7 @@ def test_persons_endpoint_returns_labels_count_and_version(monkeypatch, tmp_path
     assert response.json() == {
         'persons': fake_registry.labels,
         'count': len(fake_registry.labels),
-        'version': fake_registry.version,
+        'version': fake_registry.version
     }
 
 def test_events_endpoint_returns_empty_when_file_missing(monkeypatch, tmp_path):
@@ -110,7 +110,7 @@ def test_events_endpoint_returns_last_n_events(monkeypatch, tmp_path):
     events = [
         {'event': 'PERSON_DETECTED', 'name': 'alice'},
         {'event': 'UNKNOWN_DETECTED', 'name': 'unknown'},
-        {'event': 'PERSON_DETECTED', 'name': 'bob'},
+        {'event': 'PERSON_DETECTED', 'name': 'bob'}
     ]
     with open(events_file, 'w', encoding='utf-8') as f:
         for item in events:
@@ -121,7 +121,7 @@ def test_events_endpoint_returns_last_n_events(monkeypatch, tmp_path):
     assert response.status_code == 200
     assert response.json() == {
         'total': 3,
-        'events': events[-2:],
+        'events': events[-2:]
     }
 
 def test_reload_index_endpoint(monkeypatch, tmp_path):
@@ -134,7 +134,7 @@ def test_reload_index_endpoint(monkeypatch, tmp_path):
     assert response.json() == {
         'status': 'ok',
         'message': 'Index reloaded',
-        'stats': fake_registry.stats(),
+        'stats': fake_registry.stats()
     }
 
 def test_enroll_endpoint_adds_person(monkeypatch, tmp_path):
@@ -142,7 +142,7 @@ def test_enroll_endpoint_adds_person(monkeypatch, tmp_path):
 
     payload = {
         'name': 'charlie',
-        'embedding': [0.1, 0.2, 0.3],
+        'embedding': [0.1, 0.2, 0.3]
     }
 
     response = client.post('/enroll', json=payload)
@@ -170,6 +170,6 @@ def test_delete_person_endpoint_deletes_existing_person(monkeypatch, tmp_path):
     assert response.json() == {
         'status': 'ok',
         'deleted': 1,
-        'stats': fake_registry.stats(),
+        'stats': fake_registry.stats()
     }
     assert 'alice' not in fake_registry.labels

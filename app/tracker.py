@@ -90,7 +90,7 @@ def update_track_identity(track, predicted_name, predicted_score, match_threshol
 def add_prediction_to_track(track, predicted_name, predicted_score):
     track['history'].append({
         'name': predicted_name,
-        'score': float(predicted_score),
+        'score': float(predicted_score)
     })
 
 def get_smoothed_identity(track, match_threshold=0.5, min_votes=2):

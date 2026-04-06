@@ -4,7 +4,7 @@ from app.tracker import (
     center_distance,
     get_smoothed_identity,
     update_track_identity,
-    update_tracks,
+    update_tracks
 )
 
 
@@ -38,7 +38,7 @@ def test_update_tracks_reuses_existing_track():
             'bbox': [10, 10, 50, 50],
             'name': 'unknown',
             'score': 0.0,
-            'missed': 0,
+            'missed': 0
         }
     ]
     faces = [DummyFace([12, 12, 52, 52])]
@@ -48,7 +48,7 @@ def test_update_tracks_reuses_existing_track():
         faces=faces,
         next_track_id=2,
         max_distance=20,
-        max_missed=3,
+        max_missed=3
     )
 
     assert len(updated_tracks) == 1
@@ -69,7 +69,7 @@ def test_update_tracks_creates_new_track_for_far_face():
         next_track_id=1,
         max_distance=20,
         max_missed=3,
-        smoothing_window=5,
+        smoothing_window=5
     )
 
     assert len(updated_tracks) == 1
@@ -91,7 +91,7 @@ def test_update_tracks_increments_missed_for_unmatched_track():
             'bbox': [10, 10, 50, 50],
             'name': 'unknown',
             'score': 0.0,
-            'missed': 0,
+            'missed': 0
         }
     ]
     faces = []
@@ -101,7 +101,7 @@ def test_update_tracks_increments_missed_for_unmatched_track():
         faces=faces,
         next_track_id=2,
         max_distance=20,
-        max_missed=3,
+        max_missed=3
     )
 
     assert len(updated_tracks) == 1
@@ -117,7 +117,7 @@ def test_update_tracks_removes_stale_tracks():
             'bbox': [10, 10, 50, 50],
             'name': 'unknown',
             'score': 0.0,
-            'missed': 3,
+            'missed': 3
         }
     ]
     faces = []
@@ -127,7 +127,7 @@ def test_update_tracks_removes_stale_tracks():
         faces=faces,
         next_track_id=2,
         max_distance=20,
-        max_missed=3,
+        max_missed=3
     )
 
     assert updated_tracks == []
@@ -140,7 +140,7 @@ def test_update_track_identity_sets_name_for_unknown_track():
         'bbox': [10, 10, 50, 50],
         'name': 'unknown',
         'score': 0.0,
-        'missed': 0,
+        'missed': 0
     }
 
     update_track_identity(track, 'alice', 0.82, match_threshold=0.5)
@@ -155,7 +155,7 @@ def test_update_track_identity_ignores_weak_prediction():
         'bbox': [10, 10, 50, 50],
         'name': 'alice',
         'score': 0.80,
-        'missed': 0,
+        'missed': 0
     }
 
     update_track_identity(track, 'bob', 0.40, match_threshold=0.5)
@@ -170,7 +170,7 @@ def test_update_track_identity_updates_score_for_same_name_if_better():
         'bbox': [10, 10, 50, 50],
         'name': 'alice',
         'score': 0.75,
-        'missed': 0,
+        'missed': 0
     }
 
     update_track_identity(track, 'alice', 0.83, match_threshold=0.5)
@@ -185,7 +185,7 @@ def test_update_track_identity_does_not_switch_on_small_score_gain():
         'bbox': [10, 10, 50, 50],
         'name': 'alice',
         'score': 0.80,
-        'missed': 0,
+        'missed': 0
     }
 
     update_track_identity(track, 'bob', 0.84, match_threshold=0.5)
@@ -200,7 +200,7 @@ def test_update_track_identity_switches_on_clear_score_gain():
         'bbox': [10, 10, 50, 50],
         'name': 'alice',
         'score': 0.80,
-        'missed': 0,
+        'missed': 0
     }
 
     update_track_identity(track, 'bob', 0.90, match_threshold=0.5)
