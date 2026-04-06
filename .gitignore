@@ -1,9 +1,13 @@
+# auto created folders
 .venv/
 __pycache__/
 *.pyc
 .vscode/
 test_env/
+.pytest_cache/
 
+
+# Other files
 outputs/*.jpg
 face_db.npy
 .env

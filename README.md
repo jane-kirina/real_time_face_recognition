@@ -72,7 +72,9 @@ UI:
 - http://localhost:8000/docs -> Swagger
 - http://localhost:8000/redoc -> ReDoc
 
-## Installation
+## How to run
+
+### Installation
 
 ```bash
 git clone https://github.com/jane-kirina/real_time_face_recognition
@@ -82,7 +84,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-## Docker
+### Docker
 
 Build image:
 
@@ -96,7 +98,7 @@ docker run face-recognition-app
 
 > Note: Camera access may require additional configuration depending on OS
 
-## Configuration
+### Configuration
 
 The project uses environment-based configuration via `.env`.
 
